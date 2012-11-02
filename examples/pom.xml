@@ -38,6 +38,17 @@
         <dependency>
             <groupId>org.jbehave.site</groupId>
             <artifactId>jbehave-site-resources</artifactId>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <classifier>resources</classifier>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jbehave.site</groupId>
+            <artifactId>jbehave-site-resources</artifactId>
             <type>pom</type>
             <scope>test</scope>
         </dependency>

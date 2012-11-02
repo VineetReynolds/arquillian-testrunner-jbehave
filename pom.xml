@@ -36,6 +36,19 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.jbehave.site</groupId>
+                <artifactId>jbehave-site-resources</artifactId>
+                <version>${version.jbehave_site}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jbehave</groupId>
+                <artifactId>jbehave-core</artifactId>
+                <classifier>resources</classifier>
+                <version>${version.jbehave_core}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${version.arquillian_core}</version>
