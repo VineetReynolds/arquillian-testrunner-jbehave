@@ -1,35 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>arquillian-jbehave-parent</artifactId>
         <groupId>org.jboss.arquillian.jbehave</groupId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
-    
     <modelVersion>4.0.0</modelVersion>
-    
     <artifactId>arquillian-jbehave-core</artifactId>
     <name>Arquillian JBehave TestRunner Core</name>
     <description>Arquillian extension for running JBehave in-container and in the client</description>
-    
-    <properties>
-        <version.jbehave_core>3.5.4</version.jbehave_core>
-        <version.jbehave_site>3.1.1</version.jbehave_site>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.jboss.arquillian.core</groupId>
             <artifactId>arquillian-core-spi</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-container-test-spi</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-api</artifactId>
@@ -42,16 +31,13 @@
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.jbehave</groupId>
             <artifactId>jbehave-core</artifactId>
-            <version>${version.jbehave_core}</version>
         </dependency>
         <dependency>
             <groupId>org.jbehave.site</groupId>
             <artifactId>jbehave-site-resources</artifactId>
-            <version>${version.jbehave_site}</version>
             <type>pom</type>
         </dependency>
     </dependencies>

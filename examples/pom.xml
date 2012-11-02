@@ -4,7 +4,7 @@
     <parent>
         <artifactId>arquillian-jbehave-parent</artifactId>
         <groupId>org.jboss.arquillian.jbehave</groupId>
-        <version>1.0.0.Final-SNAPSHOT</version>
+        <version>1.0.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -15,12 +15,11 @@
     <description>Examples of using JBehave with Arquillian</description>
 
     <properties>
-        <version.arquillian_drone>1.0.0.CR3</version.arquillian_drone>
-        <version.arq.container.glassfish>1.0.0.CR2</version.arq.container.glassfish>
-        <version.glassfish>3.1.1</version.glassfish>
+        <version.arquillian_drone>1.0.0.Final</version.arquillian_drone>
+        <version.arq.container.glassfish>1.0.0.CR3</version.arq.container.glassfish>
+        <version.glassfish>3.1.2.2</version.glassfish>
         <version.jbossas_7>7.1.0.Final</version.jbossas_7>
         <version.jbossas_spec>1.0.0.Final</version.jbossas_spec>
-        <version.selenium>2.8.0</version.selenium>
     </properties>
 
     <dependencyManagement>
@@ -37,22 +36,25 @@
     
     <dependencies>
         <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.arquillian.jbehave</groupId>
             <artifactId>arquillian-jbehave-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>            
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-drone-impl</artifactId>
             <scope>test</scope>
         </dependency>
-    
+
         <!-- Support for Selenium in Arquillian Drone -->
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
@@ -70,6 +72,9 @@
     <profiles>
         <profile>
             <id>glassfish-3.1-embedded</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.container</groupId>
@@ -78,10 +83,10 @@
                     <scope>test</scope>
                 </dependency>
                 <dependency>
-                    <groupId>org.glassfish.extras</groupId>
+                    <groupId>org.glassfish.main.extras</groupId>
                     <artifactId>glassfish-embedded-all</artifactId>
                     <version>${version.glassfish}</version>
-                    <scope>compile</scope>
+                    <scope>provided</scope>
                 </dependency>
             </dependencies>
             <build>
@@ -115,9 +120,6 @@
         </profile>
         <profile>
             <id>jbossas-7-managed</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.arquillian.protocol</groupId>

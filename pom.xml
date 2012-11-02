@@ -14,7 +14,7 @@
   <!-- Artifact Information -->
   <groupId>org.jboss.arquillian.jbehave</groupId>
   <artifactId>arquillian-jbehave-parent</artifactId>
-  <version>1.0.0.Final-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Arquillian TestRunner Parent JBehave</name>
@@ -22,13 +22,14 @@
 
   <properties>
     <!-- Versioning -->
-    <version.arquillian_core>1.0.0.CR7</version.arquillian_core>
-
+    <version.arquillian_core>1.0.0.Final</version.arquillian_core>
+    <version.jbehave_core>3.7</version.jbehave_core>
+    <version.jbehave_site>3.1.1</version.jbehave_site>
     <!-- override from parent -->
     <version.release.plugin>2.1</version.release.plugin>
     <version.maven_surefire>2.9</version.maven_surefire>
-    <maven.compiler.argument.source>1.5</maven.compiler.argument.source>
-    <maven.compiler.argument.target>1.5</maven.compiler.argument.target>
+    <maven.compiler.argument.source>1.6</maven.compiler.argument.source>
+    <maven.compiler.argument.target>1.6</maven.compiler.argument.target>
   </properties>
 
     <!-- Dependency Management -->
@@ -47,6 +48,17 @@
                 <version>${version.arquillian_core}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jbehave</groupId>
+                <artifactId>jbehave-core</artifactId>
+                <version>${version.jbehave_core}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jbehave.site</groupId>
+                <artifactId>jbehave-site-resources</artifactId>
+                <version>${version.jbehave_site}</version>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>

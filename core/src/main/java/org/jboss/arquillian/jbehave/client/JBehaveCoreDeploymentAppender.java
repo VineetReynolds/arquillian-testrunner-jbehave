@@ -16,8 +16,6 @@
  */
 package org.jboss.arquillian.jbehave.client;
 
-import java.util.Collection;
-
 import org.jboss.arquillian.container.test.spi.RemoteLoadableExtension;
 import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
 import org.jboss.arquillian.jbehave.container.JBehaveContainerExtension;
@@ -29,33 +27,43 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 
+import java.io.File;
+import java.util.Collection;
+
 /**
  * Deployment appender that adds the JBehave-Core distribution to a deployment.
  * Also adds the classes and files necessary for the remote loadable extension.
- * 
- * @author Vineet Reynolds
  *
+ * @author Vineet Reynolds
  */
-public class JBehaveCoreDeploymentAppender implements AuxiliaryArchiveAppender
-{
+public class JBehaveCoreDeploymentAppender implements AuxiliaryArchiveAppender {
 
-   @Override
-   public Archive<?> createAuxiliaryArchive()
-   {
-      Collection<JavaArchive> archives = DependencyResolvers.use(MavenDependencyResolver.class)
-            .goOffline()
-            .loadMetadataFromPom("pom.xml")
-            .artifact("org.jbehave:jbehave-core:jar:3.5.4")
-            .resolveAs(JavaArchive.class);
-      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "arquillian-jbehave.jar");
-      for (Archive<JavaArchive> element : archives)
-      {
-         archive.merge(element);
-      }
-      
-      archive.addClasses(JBehaveContainerExtension.class, ArquillianInstanceStepsFactory.class, StepEnricherProvider.class);
-      archive.addAsServiceProvider(RemoteLoadableExtension.class, JBehaveContainerExtension.class);
-      return archive;
-   }
+    @Override
+    public Archive<?> createAuxiliaryArchive() {
+        String globalSettings = null;
+        String userSettings = null;
+        if (new File(System.getenv().get("M2_HOME") + "/conf/settings.xml").exists()) {
+            globalSettings = new File(System.getenv().get("M2_HOME") + "/conf/settings.xml").getAbsolutePath();
+        }
+        if (new File(System.getProperty("user.home") + "/.m2/settings.xml").exists()) {
+            userSettings = new File(System.getProperty("user.home") + "/.m2/settings.xml").getAbsolutePath();
+        }
+        MavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class);
+        if (globalSettings != null) {
+            resolver.configureFrom(globalSettings);
+        }
+        if (userSettings != null) {
+            resolver.configureFrom(userSettings);
+        }
+        resolver.loadMetadataFromPom("pom.xml");
+        Collection<JavaArchive> archives = resolver.artifact("org.jbehave:jbehave-core").resolveAs(JavaArchive.class);
+        JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "arquillian-jbehave.jar");
+        for (Archive<JavaArchive> element : archives) {
+            archive.merge(element);
+        }
+        archive.addClasses(JBehaveContainerExtension.class, ArquillianInstanceStepsFactory.class, StepEnricherProvider.class);
+        archive.addAsServiceProvider(RemoteLoadableExtension.class, JBehaveContainerExtension.class);
+        return archive;
+    }
 
 }
