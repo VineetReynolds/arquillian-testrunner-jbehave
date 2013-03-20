@@ -22,7 +22,8 @@
 
   <properties>
     <!-- Versioning -->
-    <version.arquillian_core>1.0.0.Final</version.arquillian_core>
+    <version.shrinkwrap-resolver>2.0.0-beta-2</version.shrinkwrap-resolver>
+    <version.arquillian_core>1.0.3.Final</version.arquillian_core>
     <version.jbehave_core>3.7</version.jbehave_core>
     <version.jbehave_site>3.1.1</version.jbehave_site>
     <!-- override from parent -->
@@ -48,6 +49,13 @@
                 <version>${version.jbehave_core}</version>
                 <type>zip</type>
             </dependency>
+             <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${version.shrinkwrap-resolver}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -72,6 +80,12 @@
                 <artifactId>jbehave-site-resources</artifactId>
                 <version>${version.jbehave_site}</version>
                 <type>pom</type>
+            </dependency>
+             <dependency>
+                <groupId>org.jbehave.site</groupId>
+                <artifactId>jbehave-site-resources</artifactId>
+                <version>${version.jbehave_site}</version>
+                <type>zip</type>
             </dependency>
         </dependencies>
     </dependencyManagement>

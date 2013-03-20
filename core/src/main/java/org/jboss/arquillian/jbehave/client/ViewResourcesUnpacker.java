@@ -18,9 +18,7 @@ package org.jboss.arquillian.jbehave.client;
 
 import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.StrictFilter;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import java.io.*;
 import java.util.Enumeration;
@@ -40,36 +38,19 @@ public class ViewResourcesUnpacker {
     private String targetDirectory = "target/jbehave/view";
 
     public void extractResources(@Observes BeforeSuite event) {
-        String globalSettings = null;
-        String userSettings = null;
-        if (new File(System.getenv().get("M2_HOME") + "/conf/settings.xml").exists()) {
-            globalSettings = new File(System.getenv().get("M2_HOME") + "/conf/settings.xml").getAbsolutePath();
-        }
-        if (new File(System.getProperty("user.home") + "/.m2/settings.xml").exists()) {
-            userSettings = new File(System.getProperty("user.home") + "/.m2/settings.xml").getAbsolutePath();
-        }
-        MavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class);
-        if (globalSettings != null) {
-            resolver.configureFrom(globalSettings);
-        }
-        if (userSettings != null) {
-            resolver.configureFrom(userSettings);
-        }
-        resolver.loadMetadataFromPom("pom.xml");
-        File[] siteResources = resolver.artifact("org.jbehave.site:jbehave-site-resources:zip")
-                .artifact("org.jbehave:jbehave-core:zip:resources")
-                .resolveAsFiles(new StrictFilter());
+        File[] siteResources = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeDependencies().asFile();
         File destination = new File(targetDirectory);
         for (File resource : siteResources) {
             try {
-                unpack(resource, destination);
+            	if (resource.getName().startsWith("jbehave-site-resources") && resource.getName().endsWith(".zip")){
+            		unpack(resource, destination);
+            	}	
             } catch (ZipException zipEx) {
                 throw new RuntimeException(zipEx);
             } catch (IOException ioEx) {
                 throw new RuntimeException(ioEx);
             }
         }
-
     }
 
     private void unpack(File resource, File destination) throws ZipException, IOException {

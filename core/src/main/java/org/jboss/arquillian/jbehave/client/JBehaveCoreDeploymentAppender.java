@@ -24,11 +24,7 @@ import org.jboss.arquillian.jbehave.core.StepEnricherProvider;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-
-import java.io.File;
-import java.util.Collection;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 /**
  * Deployment appender that adds the JBehave-Core distribution to a deployment.
@@ -40,23 +36,7 @@ public class JBehaveCoreDeploymentAppender implements AuxiliaryArchiveAppender {
 
     @Override
     public Archive<?> createAuxiliaryArchive() {
-        String globalSettings = null;
-        String userSettings = null;
-        if (new File(System.getenv().get("M2_HOME") + "/conf/settings.xml").exists()) {
-            globalSettings = new File(System.getenv().get("M2_HOME") + "/conf/settings.xml").getAbsolutePath();
-        }
-        if (new File(System.getProperty("user.home") + "/.m2/settings.xml").exists()) {
-            userSettings = new File(System.getProperty("user.home") + "/.m2/settings.xml").getAbsolutePath();
-        }
-        MavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class);
-        if (globalSettings != null) {
-            resolver.configureFrom(globalSettings);
-        }
-        if (userSettings != null) {
-            resolver.configureFrom(userSettings);
-        }
-        resolver.loadMetadataFromPom("pom.xml");
-        Collection<JavaArchive> archives = resolver.artifact("org.jbehave:jbehave-core").resolveAs(JavaArchive.class);
+        JavaArchive[] archives = Maven.resolver().loadPomFromFile("pom.xml").resolve("org.jbehave:jbehave-core").withoutTransitivity().as(JavaArchive.class);
         JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "arquillian-jbehave.jar");
         for (Archive<JavaArchive> element : archives) {
             archive.merge(element);
