@@ -21,8 +21,6 @@ import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
-import java.io.File;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
@@ -34,8 +32,10 @@ import org.jboss.arquillian.jbehave.core.ArquillianInstanceStepsFactory;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.junit.runner.RunWith;
 
 import com.google.common.util.concurrent.MoreExecutors;
@@ -58,8 +58,9 @@ public class ExchangeCurrenciesInContainer extends JUnitStory
             .addPackage("org.jboss.arquillian.jbehave.examples.container")
             .addAsResource("org/jboss/arquillian/jbehave/examples/container/exchange_currencies_in_container.story")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-      File[] libs = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.google.guava:guava").withoutTransitivity().asFile();
-      archive.addAsLibraries(libs);
+      archive.addAsLibraries(DependencyResolvers.use(MavenDependencyResolver.class)
+            .artifact("com.google.guava:guava:11.0.1")
+            .resolveAs(JavaArchive.class));
       return archive;
    }
 
