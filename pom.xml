@@ -22,7 +22,8 @@
 
   <properties>
     <!-- Versioning -->
-    <version.arquillian_core>1.0.0.Final</version.arquillian_core>
+    <version.shrinkwrap-resolver>2.0.0-beta-2</version.shrinkwrap-resolver>
+    <version.arquillian_core>1.0.3.Final</version.arquillian_core>
     <version.jbehave_core>3.7</version.jbehave_core>
     <version.jbehave_site>3.1.1</version.jbehave_site>
     <!-- override from parent -->
@@ -30,23 +31,20 @@
     <version.maven_surefire>2.9</version.maven_surefire>
     <maven.compiler.argument.source>1.6</maven.compiler.argument.source>
     <maven.compiler.argument.target>1.6</maven.compiler.argument.target>
+    
+    <version.maven-jar-plugin>2.4</version.maven-jar-plugin>
   </properties>
 
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.jbehave.site</groupId>
-                <artifactId>jbehave-site-resources</artifactId>
-                <version>${version.jbehave_site}</version>
-                <type>zip</type>
-            </dependency>
-            <dependency>
-                <groupId>org.jbehave</groupId>
-                <artifactId>jbehave-core</artifactId>
-                <classifier>resources</classifier>
-                <version>${version.jbehave_core}</version>
-                <type>zip</type>
+            
+             <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${version.shrinkwrap-resolver}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
@@ -61,17 +59,6 @@
                 <version>${version.arquillian_core}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jbehave</groupId>
-                <artifactId>jbehave-core</artifactId>
-                <version>${version.jbehave_core}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jbehave.site</groupId>
-                <artifactId>jbehave-site-resources</artifactId>
-                <version>${version.jbehave_site}</version>
-                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -92,6 +79,22 @@
         </configuration>
       </plugin>
     </plugins>
+    <pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${version.maven-jar-plugin}</version>
+					<configuration>
+						<archive>
+							<manifestEntries>
+								<JbehaveCore-Version>${version.jbehave_core}</JbehaveCore-Version>
+								<JbehaveSite-Version>${version.jbehave_site}</JbehaveSite-Version>
+							</manifestEntries>
+						</archive>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
   </build>
 
 </project>

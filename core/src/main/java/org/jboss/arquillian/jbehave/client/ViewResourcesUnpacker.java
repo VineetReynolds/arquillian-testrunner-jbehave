@@ -16,17 +16,20 @@
  */
 package org.jboss.arquillian.jbehave.client;
 
-import org.jboss.arquillian.core.api.annotation.Observes;
-import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.StrictFilter;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import org.jboss.arquillian.core.api.annotation.Observes;
+import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 
 /**
  * Listens for the {@link BeforeSuite} event.
@@ -39,37 +42,18 @@ public class ViewResourcesUnpacker {
 
     private String targetDirectory = "target/jbehave/view";
 
+   
     public void extractResources(@Observes BeforeSuite event) {
-        String globalSettings = null;
-        String userSettings = null;
-        if (new File(System.getenv().get("M2_HOME") + "/conf/settings.xml").exists()) {
-            globalSettings = new File(System.getenv().get("M2_HOME") + "/conf/settings.xml").getAbsolutePath();
-        }
-        if (new File(System.getProperty("user.home") + "/.m2/settings.xml").exists()) {
-            userSettings = new File(System.getProperty("user.home") + "/.m2/settings.xml").getAbsolutePath();
-        }
-        MavenDependencyResolver resolver = DependencyResolvers.use(MavenDependencyResolver.class);
-        if (globalSettings != null) {
-            resolver.configureFrom(globalSettings);
-        }
-        if (userSettings != null) {
-            resolver.configureFrom(userSettings);
-        }
-        resolver.loadMetadataFromPom("pom.xml");
-        File[] siteResources = resolver.artifact("org.jbehave.site:jbehave-site-resources:zip")
-                .artifact("org.jbehave:jbehave-core:zip:resources")
-                .resolveAsFiles(new StrictFilter());
-        File destination = new File(targetDirectory);
-        for (File resource : siteResources) {
-            try {
-                unpack(resource, destination);
-            } catch (ZipException zipEx) {
-                throw new RuntimeException(zipEx);
-            } catch (IOException ioEx) {
-                throw new RuntimeException(ioEx);
-            }
-        }
-
+    	
+    	try {
+    		final MavenResolvedArtifact artifact = Maven.resolver().loadPomFromFile("pom.xml").resolve("org.jbehave.site:jbehave-site-resources:zip:"+ManifestHelper.instance().getVersionJbehaveSite()).withoutTransitivity().asSingleResolvedArtifact();
+        	File destination = new File(targetDirectory);
+       		unpack(artifact.asFile(), destination);
+    	} catch (ZipException zipEx) {
+            throw new RuntimeException(zipEx);
+    	} catch (IOException ioEx) {
+            throw new RuntimeException(ioEx);
+    	}
     }
 
     private void unpack(File resource, File destination) throws ZipException, IOException {
@@ -79,7 +63,7 @@ public class ViewResourcesUnpacker {
         Enumeration<? extends ZipEntry> entries = zip.entries();
         while (entries.hasMoreElements()) {
             ZipEntry currentEntry = entries.nextElement();
-            File entryFile = new File(destination, currentEntry.getName());
+            File entryFile = new File(destination.getAbsolutePath(), currentEntry.getName());
             File parentFile = entryFile.getParentFile();
             parentFile.mkdirs();
 
