@@ -14,7 +14,7 @@
   <!-- Artifact Information -->
   <groupId>org.jboss.arquillian.jbehave</groupId>
   <artifactId>arquillian-jbehave-parent</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Arquillian TestRunner Parent JBehave</name>
